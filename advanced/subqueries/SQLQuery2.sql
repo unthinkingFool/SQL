@@ -1,0 +1,8 @@
+-- FIND THE PRODUCTS THAT HAVE A PRICE HIGHER THAN THE AVERAGE PRICE OF ALL PRODUCTS
+SELECT * FROM (
+	SELECT 
+		*,
+		AVG(Price) OVER() AS avg_price
+	FROM Sales.Products
+)t 
+WHERE Price>avg_price
