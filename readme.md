@@ -42,6 +42,7 @@ The goal of this repository is to:
 - Git & GitHub
 - VS Code
 - MySQL Workbench
+- SQL SERVER MANAGEMENT STUDIO 22
 - Command Line
 
 ---
