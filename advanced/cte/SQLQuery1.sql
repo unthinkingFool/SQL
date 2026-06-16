@@ -1,51 +1,17 @@
--- step-1 : find the total sales per customer : STANDALONE CTE
-WITH cte_total_sales AS 
-(
-	SELECT 
-	CustomerID,
-	SUM(Sales) 	AS salesSUM
-	FROM Sales.Orders
-	GROUP BY CustomerID
-)
+-- generate a swquence of numbers from 1 to 20 
+-- using recursive query
 
--- step-2 : find the last order date or per customer : STANDALONE CTE
-, cte_last_order AS
-(
+WITH series AS(
+-- anchor query
 	SELECT 
-	CustomerID,
-	MAX(OrderDate) last_order 
-	FROM Sales.Orders
-	GROUP BY CustomerID
-	
-)
+	1 AS number
 
--- step-3 : rank the customers based on total sales per customer : NESTED CTE
-,cte_rank AS 
-(
+UNION ALL
+-- recursive query
 	SELECT
-	*,
-	RANK() OVER(ORDER BY salesSUM DESC)  rank
-	FROM cte_total_sales cts
+	number+1
+	FROM series
+	WHERE number<20
 )
 
--- step-4 : segment customers based on their total sales
-,cte_segment AS
-(
-	SELECT 
-	*,
-	CASE WHEN salesSUM > 100 THEN 'HIGH'
-		 WHEN salesSUM >50 THEN 'MEDIUM'
-		 ELSE 'LOW' 
-	END segment
-	FROM cte_total_sales cts
-)
-
--- main query
-
-SELECT 
-*
-FROM Sales.Customers c
-LEFT JOIN cte_total_sales cts  ON cts.CustomerID=c.CustomerID
-LEFT JOIN cte_last_order clo ON clo.CustomerID=c.CustomerID
-LEFT JOIN cte_rank cr ON cr.CustomerID=c.CustomerID
-LEFT JOIN cte_segment cs ON cs.CustomerID=c.CustomerID
+SELECT * FROM series
