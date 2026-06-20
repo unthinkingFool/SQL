@@ -1,0 +1,33 @@
+-- TRIGGER 
+
+-- TRIGGER TABLE CREATION FOR INSERTING EMPLOYEES TABLE ACTION
+CREATE TABLE Sales.EmployeeLogs(
+	LogID INT IDENTITY(1,1) PRIMARY KEY,
+	EmployeeID INT,
+	LogMessage VARCHAR(50),
+	LogDate DATE
+)
+
+-- CREATING TRIGGER FOR THE EMPLOYEE INSERTION ACTION IN THE EMPLOYEES TABLE
+CREATE TRIGGER trg_AFTERinsertEMPLOYEE ON Sales.Employees
+AFTER INSERT
+AS
+BEGIN
+	INSERT INTO Sales.EmployeeLogs (EmployeeID,LogMessage,LogDate)
+	SELECT 
+		EmployeeID,
+		'new employee added with id : ' +CAST(EmployeeID AS VARCHAR),
+		GETDATE()
+	FROM INSERTED
+END
+
+-- EXPERIMENTING TRIGGER ON EMPLOYEE INSERTION IN EMPLOYEES TABLE
+
+-- inserting into EMPLOYEES TABLE
+INSERT INTO Sales.Employees
+VALUES (6,'hello','hehe','hr','1988-01-11','f',80000,2)
+
+-- checking log for employee insertion
+SELECT
+*
+FROM Sales.EmployeeLogs
